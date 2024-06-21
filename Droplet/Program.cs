@@ -49,15 +49,37 @@ public class Program
         app.MapRazorPages();
 
 
+        // Seed application user roles
         using (var scope = app.Services.CreateScope())
         {
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            var roles = new[] { "Admin", "Recepcionist", "User" };
+            var roles = new[] { "Admin", "Manager", "User" };
             foreach (var role in roles)
             {
                 if (!await roleManager.RoleExistsAsync(role))
                     await roleManager.CreateAsync(new IdentityRole(role));
+            }
+        }
+
+        // Seed admin user
+        using (var scope = app.Services.CreateScope())
+        {
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+            string adminEmail = "admin@droplet.com";
+            string adminPasswd = "zaq1@WSX";
+
+            if(await userManager.FindByEmailAsync(adminEmail) == null)
+            {
+                var user = new IdentityUser();
+                user.Email = adminEmail;
+                user.UserName = adminEmail;
+                user.EmailConfirmed = true;
+
+                await userManager.CreateAsync(user, adminPasswd);
+
+                await userManager.AddToRoleAsync(user, "Admin");
             }
         }
 
