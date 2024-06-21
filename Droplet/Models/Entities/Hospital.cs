@@ -10,6 +10,7 @@ namespace Droplet.Models.Entities
         public string Street { get; set; } = default!;
         public string PostalCode { get; set; } = default!;
 
-        public ICollection<Doctor> Doctors { get; set; }
+        public ICollection<Doctor> Doctors { get; set; } = new List<Doctor>();
+        public ICollection<Transfusion> Transfusions { get; set; } = new List<Transfusion>();
     }
 }

@@ -12,6 +12,6 @@ namespace Droplet.Models.Entities
         public string PESEL { get; set; } = default!;
         public BloodTypeEnum BloodType { get; set; } = default!;
 
-        public ICollection<Bank>? Donations { get; set; }
+        public ICollection<Bank> Donations { get; set; } = new List<Bank>();
     }
 }

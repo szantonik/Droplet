@@ -11,7 +11,8 @@ namespace Droplet.Models.Entities
         public string LastName { get; set; }
         public string PESEL { get; set; }
 
-        public ICollection<Hospital> Hospitals { get; set; }
+        public ICollection<Hospital> Hospitals { get; set; } = new List<Hospital>();
+        public ICollection<Transfusion> Transfusions { get; set; } = new List<Transfusion>();
 
     }
 }
