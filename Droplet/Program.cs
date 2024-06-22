@@ -69,12 +69,14 @@ public class Program
 
             string adminEmail = "admin@droplet.com";
             string adminPasswd = "zaq1@WSX";
+            string adminLogin = "admin";
 
-            if(await userManager.FindByEmailAsync(adminEmail) == null)
+            //if(await userManager.FindByEmailAsync(adminEmail) == null)
+            if(await userManager.FindByLoginAsync(adminLogin, "Droplet") == null)
             {
                 var user = new IdentityUser();
                 user.Email = adminEmail;
-                user.UserName = adminEmail;
+                user.UserName = adminLogin;
                 user.EmailConfirmed = true;
 
                 await userManager.CreateAsync(user, adminPasswd);

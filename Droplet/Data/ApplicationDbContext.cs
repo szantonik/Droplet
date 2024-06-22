@@ -13,6 +13,7 @@ namespace Droplet.Data
         public DbSet<Donor> Donors { get; set; }
         public DbSet<Hospital> Hospitals { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<IdentityUser> AppUsers {  get; set; } 
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
