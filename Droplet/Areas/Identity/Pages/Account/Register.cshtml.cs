@@ -122,6 +122,7 @@ namespace Droplet.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, "An account with this email already exists.");
                     return Page();
                 }
+                Console.WriteLine("abc");
 
                 var user = CreateUser();
 

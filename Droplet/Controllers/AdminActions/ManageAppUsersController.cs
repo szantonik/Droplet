@@ -1,6 +1,7 @@
 ﻿using Droplet.Data;
 using Droplet.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,29 +9,37 @@ namespace Droplet.Controllers
 {
     public class ManageAppUsersController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public ManageAppUsersController(ApplicationDbContext context)
+        public ManageAppUsersController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
-            _context = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         // GET: ManageAppUsersController
         [Route("/AdminActions/ManageAppUsers", Name ="appuserlist")]
         public async Task<IActionResult> Index()
         {
-            var users = await _context.AppUsers
-                .Join(_context.UserRoles, u => u.Id, ur => ur.UserId, (u, ur) => new { u, ur })
-                .Join(_context.Roles, ur => ur.ur.RoleId, r => r.Id, (ur, r) => new { ur.u.Id, ur.u.UserName, ur.u.Email, Role = r.Name })
-                .Select(uv => new UserViewModel
+            var usersWithRoles = new List<UserViewModel>();
+
+            var users = await _userManager.Users.ToListAsync();
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                var role = roles.FirstOrDefault(); // Assuming each user has exactly one role
+
+                usersWithRoles.Add(new UserViewModel
                 {
-                    Id = uv.Id,
-                    Username = uv.UserName,
-                    Email = uv.Email,
-                    Role = uv.Role
-                })
-                .ToListAsync();
-            return View("~/Views/AdminActions/ManageAppusers/Index.cshtml", users);
+                    Id = user.Id,
+                    Username = user.UserName,
+                    Email = user.Email,
+                    Role = role ?? "No role assigned"
+                });
+            }
+            return View("~/Views/AdminActions/ManageAppusers/Index.cshtml", usersWithRoles);
         }
 
         // GET: ManageAppUsersController/Details/5
