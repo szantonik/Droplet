@@ -134,6 +134,11 @@ namespace Droplet.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    var result_ = await _userManager.AddToRoleAsync(user, "User");
+                    if (!result_.Succeeded)
+                    {
+                        _logger.LogInformation("Error occured while adding user to User role.");
+                    }
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
